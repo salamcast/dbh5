@@ -1,0 +1,24 @@
+.tabs-nav {
+    padding: 20px 0 0;
+    list-style: none;
+    margin: 5px;
+}
+.tabs-nav li {
+    display: inline;
+    margin-right: 20px;
+}
+.tabs-nav a {
+    display:inline-block;
+    cursor: pointer;
+}
+.tabs-nav .active {
+    color: #ff0000;
+}
+.tab-content {
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+h3 { padding: 9px;}
+
+.switcher { padding: 9px;}

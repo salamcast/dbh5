@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>DBH5 - HTML 5 Browser storage js class</title>
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
+
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+        <link rel="stylesheet" href="js/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
+        <link rel="stylesheet" href="js/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
+        <link rel="stylesheet" href="js/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+        <link rel="stylesheet" href="css/app.css" />
+
+        <script type="text/javascript" src="js/angular/angular.min.js"></script>
+
+
+        <script type="text/javascript" src="js/mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
+        <script type="text/javascript" src="dbh5.js" ></script>
+        <script type="text/javascript"  >
+
+        var db = angular.module('DBH5', [
+
+            "mobile-angular-ui"
+        ]);
+
+
+
+
+        var $scope = {};
+
+        $scope.title = "";
+
+
+        db.controller('dbh5', ['$scope', function($scope) {
+
+            if ($scope.backend === true) {
+                dbh5.db = sessionStorage;
+            } else {
+                dbh5.db = localStorage;
+            }
+            $scope.list_pages =  dbh5.getPages();
+
+            $scope.view_page = function() {
+                if ($scope.backend === true) {
+                    dbh5.db = sessionStorage;
+                } else {
+                    dbh5.db = localStorage;
+                }
+                $scope.list_pages =  dbh5.getPages();
+                return dbh5.getPage($scope.page);
+            }
+
+            $scope.add_page = function() {
+                if ($scope.backend === true) {
+                    dbh5.db = sessionStorage;
+                } else {
+                    dbh5.db = localStorage;
+                }
+                $scope.list_pages =  dbh5.getPages();
+                dbh5.setPage($scope.new_page,$scope.new_page_data);
+                $scope.new_page = '';
+                $scope.new_page_data = '';
+            }
+            $scope.add_item = function() {
+                if ($scope.backend === true) {
+                    dbh5.db = sessionStorage;
+                } else {
+                    dbh5.db = localStorage;
+                }
+                $scope.list_pages =  dbh5.getPages();
+                dbh5.addItem($scope.page,$scope.newItem);
+                $scope.newItem = '';
+            }
+
+            $scope.delete_page = function() {
+                if ($scope.backend === true) {
+                    dbh5.db = sessionStorage;
+                } else {
+                    dbh5.db = localStorage;
+                }
+                dbh5.deletePage($scope.page);
+            }
+
+            $scope.delete_item = function(v) {
+                if ($scope.backend === true) {
+                    dbh5.db = sessionStorage;
+                } else {
+                    dbh5.db = localStorage;
+                }
+                dbh5.deleteItem($scope.page, v);
+
+            }
+        }]);
+
+        </script>
+
+
+    </head>
+    <body ng-app="DBH5" ng-controller="dbh5">
+    <h3>DBH5 -> Database HTML 5 | Browser Storage Class for your Page Data</h3>
+    <div class="switcher">
+        <input type="checkbox" ng-model="backend"> Use Session Storage <br/>
+    </div>
+    <div class="tabs-holder" ng-app="simpleTab" ng-init="tab=1">
+        <ul class="tabs-nav">
+            <li><a ng-click="tab=1" ng-class="{'active' : tab==1}">View</a></li>
+            <li><a ng-click="tab=2" ng-class="{'active' : tab==2}">Add New Page</a></li>
+            <li><a ng-click="tab=3" ng-class="{'active' : tab==3}">Delete Page</a></li>
+            <li><a ng-click="tab=4" ng-class="{'active' : tab==4}">Add Item </a></li>
+            <li><a ng-click="tab=5" ng-class="{'active' : tab==5}">Delete Item</a></li>
+        </ul>
+        <div class="tabs-container">
+            <!-- View -->
+            <div class="tab-content" ng-show="tab == 1">
+                <fieldset>
+                    <legend>Page Name</legend>
+                    <select ng-model="page" ><option ng-repeat="p in list_pages" >{{p}}</option></select>
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>Page Data</legend>
+                    <pre >{{ view_page() }}</pre>
+                </fieldset>
+            </div>
+            <!-- Add page -->
+            <div class="tab-content" ng-show="tab == 2">
+                <fieldset>
+                    <legend>Page Name</legend>
+                    <input type="text" ng-model="new_page" />
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>Page Data</legend>
+                    <textarea ng-model="new_page_data" ></textarea>
+                </fieldset>
+                <br />
+                <button ng-click="add_page()">New Page</button>
+            </div>
+
+            <!-- Delete page -->
+            <div class="tab-content" ng-show="tab == 3">
+                <fieldset>
+                    <legend>Page Name</legend>
+                    <div class="container-fluid">
+                        <div class="row"  ng-repeat="p in list_pages">
+                            <div class="col-sm-3">{{ p }}</div>
+                            <div class="col-sm-1"><button ng-click="delete_page(p)">delete</button></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Add item -->
+            <div class="tab-content" ng-show="tab == 4">
+                <fieldset>
+                    <legend>Page Name</legend>
+                    <select  ng-model="page" ><option ng-repeat="p in list_pages" >{{p}}</option></select>
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>Page Data</legend>
+                    <pre >{{ view_page() }}</pre>
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>item</legend>
+                    <input type="text" ng-Model="newItem"/>
+                </fieldset>
+                <br />
+                <button ng-click="add_item()">add item</button>
+
+            </div>
+        </div>
+        <!-- Delete Item -->
+        <div class="tab-content" ng-show="tab == 5">
+            <fieldset>
+                <legend>Page Name</legend>
+                <select  ng-model="page" ><option ng-repeat="p in list_pages" >{{ p }}</option></select>
+            </fieldset>
+            <br />
+            <fieldset>
+                <legend>Page Data</legend>
+                <div class="container-fluid">
+                    <div class="row"  ng-repeat="v in view_page()">
+                        <div class="col-sm-3">{{ v }}</div>
+                        <div class="col-sm-1"><button ng-click="delete_item(v)">delete</button></div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+        </div>
+    </div>
+    </div>
+    </body>
+</html>
